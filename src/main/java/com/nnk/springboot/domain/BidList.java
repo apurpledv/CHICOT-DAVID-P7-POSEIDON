@@ -1,5 +1,6 @@
 package com.nnk.springboot.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,8 +16,9 @@ import java.sql.Timestamp;
 @Table(name = "bidlist")
 public class BidList {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    Integer BidListId;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(name = "bidlistid")
+    Integer bidListId;
 
     @NotBlank(message = "account is mandatory")
     String account;

@@ -12,7 +12,7 @@ import lombok.Data;
 @Table(name = "rulename")
 public class RuleName {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     Integer id;
     
     String name;

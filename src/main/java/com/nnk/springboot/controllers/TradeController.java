@@ -41,7 +41,7 @@ public class TradeController {
 
     @PostMapping("/trade/validate")
     public String validate(@Validated Trade trade, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !trade.isValid()) {
             log.info("[POST]'/trade/validate' -> trade/add");
             return "trade/add";
         }
@@ -70,7 +70,7 @@ public class TradeController {
 
     @PostMapping("/trade/update/{id}")
     public String updateTrade(@PathVariable("id") Integer id, @Validated Trade trade, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !trade.isValid()) {
             log.info("[POST]'/trade/update' => trade/update");
             return "redirect:/trade/update";
         }

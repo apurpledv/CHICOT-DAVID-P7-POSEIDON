@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-public class RuleTests {
+public class RuleNameRepositoryTest {
 	@Autowired
 	private RuleNameRepository ruleNameRepository;
 
 	@Test
-	public void ruleTest() {
+	public void ruleNameRepositoryTest() {
 		RuleName rule = new RuleName("Rule Name", "Description", "Json", "Template", "SQL", "SQL Part");
 
 		// Save

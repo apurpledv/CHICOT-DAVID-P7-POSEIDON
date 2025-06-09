@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
 @Controller
-public class CurveController {
+public class CurvePointController {
     @Autowired
     CurvePointService curveService;
 
@@ -41,13 +41,14 @@ public class CurveController {
 
     @PostMapping("/curvePoint/validate")
     public String validate(@Validated CurvePoint curvePoint, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !curvePoint.isValid()) {
             log.info("[POST]'/curvePoint/validate' -> curvePoint/add");
             return "curvePoint/add";
         }
 
         try {
             curveService.saveCurvePoint(curvePoint);
+            System.out.println("wtf");
             log.info("[POST]'/curvePoint/validate' => curvePoint/list");
             return "redirect:/curvePoint/list";
         } catch (Exception e) {
@@ -70,7 +71,7 @@ public class CurveController {
 
     @PostMapping("/curvePoint/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Validated CurvePoint curvePoint, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !curvePoint.isValid()) {
             log.info("[POST]'/curvePoint/update' => curvePoint/update");
             return "redirect:/curvePoint/update";
         }

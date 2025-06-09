@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-public class RatingTests {
+public class RatingRepositoryTest {
 
 	@Autowired
 	private RatingRepository ratingRepository;
 
 	@Test
-	public void ratingTest() {
+	public void ratingRepositoryTest() {
 		Rating rating = new Rating("Moodys Rating", "Sand PRating", "Fitch Rating", 10);
 
 		// Save

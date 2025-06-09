@@ -76,13 +76,20 @@ public class UserControllerTest {
 
     @Test
     public void userControllerNonValidTest() throws Exception {
-        // Add View Non Valid
+        // Add Action Non Valid
+        when(userService.saveUser(any(User.class))).thenAnswer(invocation -> { 
+			throw new Exception(); 
+		});
         this.mockMvc.perform(post("/user/validate"))
             .andExpect(status().isOk());
 
+        this.mockMvc.perform(post("/user/validate")
+            .flashAttr("user", user))
+            .andExpect(status().isFound());
+
         // Update View Non Valid
         when(userService.getUser(any(int.class))).thenAnswer(invocation -> { 
-			throw new IllegalArgumentException(); 
+			throw new Exception(); 
 		});
         this.mockMvc.perform(get("/user/update/-1"))
             .andExpect(status().isOk());
@@ -90,6 +97,10 @@ public class UserControllerTest {
         // Update Action Non Valid
         this.mockMvc.perform(post("/user/update/3"))
             .andExpect(status().isOk());
+
+        this.mockMvc.perform(post("/user/update/3")
+            .flashAttr("user", user))
+            .andExpect(status().isFound());
 
         // Delete Action Non Valid
         this.mockMvc.perform(get("/user/delete/3"))

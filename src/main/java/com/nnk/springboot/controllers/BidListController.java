@@ -52,7 +52,7 @@ public class BidListController {
             return "redirect:/bidList/list";
         } catch (Exception e) {
             log.info("[POST]'/bidList/validate' -> bidList/add");
-            return "bidList/add";
+            return "redirect:/bidList/list";
         }
     }
 

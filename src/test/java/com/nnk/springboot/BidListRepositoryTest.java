@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-public class BidRepositoryTest {
+public class BidListRepositoryTest {
 
 	@Autowired
 	private BidListRepository bidListRepository;
 
 	@Test
-	public void bidListTest() {
+	public void bidListRepositoryTest() {
 		BidList bid = new BidList("Account Test", "Type Test", 10d);
 
 		// Save

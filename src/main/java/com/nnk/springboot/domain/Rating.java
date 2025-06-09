@@ -30,4 +30,8 @@ public class Rating {
         this.fitchRating = fitchRating;
         this.orderNumber = orderNumber;
     }
+
+    public boolean isValid() {
+        return (this.moodysRating != null && this.sandPRating != null && this.fitchRating != null && this.orderNumber != null);
+    }
 }

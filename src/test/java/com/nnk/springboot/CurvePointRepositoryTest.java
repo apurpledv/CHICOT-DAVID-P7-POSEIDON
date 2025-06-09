@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
-public class CurvePointTests {
+public class CurvePointRepositoryTest {
 
 	@Autowired
 	private CurvePointRepository curvePointRepository;
 
 	@Test
-	public void curvePointTest() {
+	public void curvePointRepositoryTest() {
 		CurvePoint curvePoint = new CurvePoint(10, 10d, 30d);
 
 		// Save

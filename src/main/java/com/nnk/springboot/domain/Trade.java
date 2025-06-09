@@ -53,4 +53,8 @@ public class Trade {
         this.account = account;
         this.type = type;
     }
+
+    public boolean isValid() {
+        return (this.account != null && this.type != null);
+    }
 }

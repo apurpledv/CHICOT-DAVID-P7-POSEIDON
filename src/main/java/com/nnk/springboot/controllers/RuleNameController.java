@@ -41,7 +41,7 @@ public class RuleNameController {
 
     @PostMapping("/ruleName/validate")
     public String validate(@Validated RuleName ruleName, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !ruleName.isValid()) {
             log.info("[POST]'/ruleName/validate' -> ruleName/add");
             return "ruleName/add";
         }
@@ -70,7 +70,7 @@ public class RuleNameController {
 
     @PostMapping("/ruleName/update/{id}")
     public String updateRuleName(@PathVariable("id") Integer id, @Validated RuleName ruleName, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !ruleName.isValid()) {
             log.info("[POST]'/ruleName/update' => ruleName/update");
             return "redirect:/ruleName/update";
         }

@@ -34,4 +34,8 @@ public class RuleName {
         this.sqlStr = sqlStr;
         this.sqlPart = sqlPart;
     }
+
+    public boolean isValid() {
+        return (this.name != null && this.description != null && this.json != null && this.template != null && this.sqlStr != null && this.sqlPart != null);
+    }
 }

@@ -41,7 +41,7 @@ public class RatingController {
 
     @PostMapping("/rating/validate")
     public String validate(@Validated Rating rating, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !rating.isValid()) {
             log.info("[POST]'/rating/validate' -> rating/add");
             return "rating/add";
         }
@@ -70,7 +70,7 @@ public class RatingController {
 
     @PostMapping("/rating/update/{id}")
     public String updateRating(@PathVariable("id") Integer id, @Validated Rating rating, BindingResult result, Model model) {
-        if (result.hasErrors()) {
+        if (result.hasErrors() || !rating.isValid()) {
             log.info("[POST]'/rating/update' => rating/update");
             return "redirect:/rating/update";
         }

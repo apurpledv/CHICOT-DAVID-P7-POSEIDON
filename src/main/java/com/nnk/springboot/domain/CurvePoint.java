@@ -32,4 +32,8 @@ public class CurvePoint {
         this.term = term;
         this.value = value;
     }
+
+    public boolean isValid() {
+        return (this.curveId != null && this.term != null && this.value != null);
+    }
 }

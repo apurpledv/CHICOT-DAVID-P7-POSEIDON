@@ -51,7 +51,6 @@ public class UserController {
             user.setPassword(encoder.encode(user.getPassword()));
             userService.saveUser(user);
             model.addAttribute("users", userService.getUsers());
-
             log.info("[POST]'/user/validate' => user/list");
             return "redirect:/user/list";
         } catch (Exception e) {
@@ -66,7 +65,6 @@ public class UserController {
             User user = userService.getUser(id);
             user.setPassword("");
             model.addAttribute("user", user);
-
             log.info("[GET]'/user/update/' -> user/list");
             return "user/update";
         } catch (Exception e) {
@@ -88,7 +86,6 @@ public class UserController {
             user.setId(id);
             userService.saveUser(user);
             model.addAttribute("users", userService.getUsers());
-
             log.info("[POST]'/user/update/' => user/list");
             return "redirect:/user/list";
         } catch (Exception e) {
@@ -103,7 +100,6 @@ public class UserController {
             User user = userService.getUser(id);
             userRepository.delete(user);
             model.addAttribute("users", userRepository.findAll());
-            
             log.info("[POST]'/user/update/' => user/list");
             return "redirect:/user/list";
         } catch (Exception e) {

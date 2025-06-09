@@ -17,7 +17,7 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public User getUser(int id) throws Exception {
+    public User getUser(int id) {
         return userRepo.getReferenceById(id);
     }
 

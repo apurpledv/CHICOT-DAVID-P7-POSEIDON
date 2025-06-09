@@ -3,6 +3,8 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.services.TradeService;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Slf4j
 @Controller
 public class TradeController {
     @Autowired
@@ -20,37 +23,77 @@ public class TradeController {
 
     @RequestMapping("/trade/list")
     public String home(Model model) {
-        // TODO: find all Trade, add to model
-        return "trade/list";
+        try {
+            model.addAttribute("trades", tradeService.getAllTrades());
+            log.info("[GET]'/trade/list' -> trade/list");
+            return "trade/list";
+        } catch (Exception e) {
+            log.info("[GET]'/trade/list' -> home");
+            return "home";
+        }
     }
 
     @GetMapping("/trade/add")
     public String addUser(Trade bid) {
+        log.info("[GET]'/trade/add' -> trade/add");
         return "trade/add";
     }
 
     @PostMapping("/trade/validate")
     public String validate(@Validated Trade trade, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Trade list
-        return "trade/add";
+        if (result.hasErrors()) {
+            log.info("[POST]'/trade/validate' -> trade/add");
+            return "trade/add";
+        }
+
+        try {
+            tradeService.saveTrade(trade);
+            log.info("[POST]'/trade/validate' => trade/list");
+            return "redirect:/trade/list";
+        } catch (Exception e) {
+            log.info("[POST]'/curvePoint/validate' => trade/list");
+            return "redirect:/trade/list";
+        }
     }
 
     @GetMapping("/trade/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Trade by Id and to model then show to the form
-        return "trade/update";
+        try {
+            model.addAttribute("trade", tradeService.getTradeById(id));
+            log.info("[GET]'/trade/update/' -> trade/update");
+            return "trade/update";
+        } catch (Exception e) {
+            log.info("[GET]'/trade/update/' => trade/list");
+            return "redirect:/trade/list";
+        }
     }
 
     @PostMapping("/trade/update/{id}")
-    public String updateTrade(@PathVariable("id") Integer id, @Validated Trade trade,
-                             BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Trade and return Trade list
-        return "redirect:/trade/list";
+    public String updateTrade(@PathVariable("id") Integer id, @Validated Trade trade, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            log.info("[POST]'/trade/update' => trade/update");
+            return "redirect:/trade/update";
+        }
+
+        try {
+            tradeService.saveTrade(trade);
+            log.info("[POST]'/trade/update/' => trade/list");
+            return "redirect:/trade/list";
+        } catch (Exception e) {
+            log.info("[POST]'/trade/update/' => trade/list");
+            return "redirect:/trade/list";
+        }
     }
 
     @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Trade by Id and delete the Trade, return to Trade list
-        return "redirect:/trade/list";
+        try {
+            tradeService.deleteTrade(id);
+            log.info("[POST]'/trade/delete/' => trade/list");
+            return "redirect:/trade/list";
+        } catch (Exception e) {
+            log.info("[POST]'/trade/delete/' => trade/list");
+            return "redirect:/trade/list";
+        }
     }
 }

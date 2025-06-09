@@ -3,6 +3,8 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.services.BidListService;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
+@Slf4j
 @Controller
 public class BidListController {
     @Autowired
@@ -21,37 +23,77 @@ public class BidListController {
 
     @RequestMapping("/bidList/list")
     public String home(Model model) {
-        model.addAttribute("bidLists", bidService.getAllBidLists());
-        return "bidList/list";
+        try {
+            model.addAttribute("bidLists", bidService.getAllBidLists());
+            log.info("[GET]'/bidList/list' -> bidList/list");
+            return "bidList/list";
+        } catch (Exception e) {
+            log.info("[GET]'/bidList/list' -> home");
+            return "home";
+        }
     }
 
     @GetMapping("/bidList/add")
     public String addBidForm(BidList bid) {
+        log.info("[GET]'/bidList/add' -> bidList/add");
         return "bidList/add";
     }
 
     @PostMapping("/bidList/validate")
     public String validate(@Validated BidList bid, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return bid list
-        return "bidList/add";
+        if (result.hasErrors()) {
+            log.info("[POST]'/bidList/validate' -> bidList/add");
+            return "bidList/add";
+        }
+
+        try {
+            bidService.saveBidList(bid);
+            log.info("[POST]'/bidList/validate' => bidList/list");
+            return "redirect:/bidList/list";
+        } catch (Exception e) {
+            log.info("[POST]'/bidList/validate' -> bidList/add");
+            return "bidList/add";
+        }
     }
 
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Bid by Id and to model then show to the form
-        return "bidList/update";
+        try {
+            model.addAttribute("bidList", bidService.getBidListById(id));
+            log.info("[GET]'/bidList/update/' -> bidList/update");
+            return "bidList/update";
+        } catch (Exception e) {
+            log.info("[GET]'/bidList/update/' => bidList/list");
+            return "redirect:/bidList/list";
+        }
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Validated BidList bidList,
-                             BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Bid and return list Bid
-        return "redirect:/bidList/list";
+    public String updateBid(@PathVariable("id") Integer id, @Validated BidList bid, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            log.info("[POST]'/bidList/update/' -> bidList/update");
+            return "redirect:/bidList/update";    
+        }
+
+        try {
+            bidService.saveBidList(bid);
+            log.info("[POST]'/bidList/update/' => bidList/list");
+            return "redirect:/bidList/list";
+        } catch (Exception e) {
+            log.info("[POST]'/bidList/update/' => bidList/list");
+            return "redirect:/bidList/update/" + id.toString();
+        }
     }
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Bid by Id and delete the bid, return to Bid list
-        return "redirect:/bidList/list";
+        try {
+            bidService.deleteBidList(id);
+            log.info("[GET]'/bidList/delete/' => bidList/list");
+            return "redirect:/bidList/list";
+        } catch (Exception e) {
+            log.info("[GET]'/bidList/delete/' => bidList/list");
+            return "redirect:/bidList/list";
+        }
     }
 }

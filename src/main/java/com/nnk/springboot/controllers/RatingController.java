@@ -3,6 +3,8 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.services.RatingService;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,45 +15,85 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@Slf4j
 @Controller
 public class RatingController {
     @Autowired
     RatingService ratingService;
 
     @RequestMapping("/rating/list")
-    public String home(Model model)
-    {
-        // TODO: find all Rating, add to model
-        return "rating/list";
+    public String home(Model model) {
+        try {
+            model.addAttribute("ratings", ratingService.getAllRatings());
+            log.info("[GET]'/rating/list' -> rating/list");
+            return "rating/list";
+        } catch (Exception e) {
+            log.info("[GET]'/rating/list' -> home");
+            return "home";
+        }
     }
 
     @GetMapping("/rating/add")
     public String addRatingForm(Rating rating) {
+        log.info("[GET]'/rating/add' -> rating/add");
         return "rating/add";
     }
 
     @PostMapping("/rating/validate")
     public String validate(@Validated Rating rating, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Rating list
-        return "rating/add";
+        if (result.hasErrors()) {
+            log.info("[POST]'/rating/validate' -> rating/add");
+            return "rating/add";
+        }
+
+        try {
+            ratingService.saveRating(rating);
+            log.info("[POST]'/rating/validate' => rating/list");
+            return "redirect:/rating/list";
+        } catch (Exception e) {
+            log.info("[POST]'/curvePoint/validate' => rating/list");
+            return "redirect:/rating/list";
+        }
     }
 
     @GetMapping("/rating/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Rating by Id and to model then show to the form
-        return "rating/update";
+        try {
+            model.addAttribute("rating", ratingService.getRatingById(id));
+            log.info("[GET]'/rating/update/' -> rating/update");
+            return "rating/update";
+        } catch (Exception e) {
+            log.info("[GET]'/rating/update/' => rating/list");
+            return "redirect:/rating/list";
+        }
     }
 
     @PostMapping("/rating/update/{id}")
-    public String updateRating(@PathVariable("id") Integer id, @Validated Rating rating,
-                             BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Rating and return Rating list
-        return "redirect:/rating/list";
+    public String updateRating(@PathVariable("id") Integer id, @Validated Rating rating, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            log.info("[POST]'/rating/update' => rating/update");
+            return "redirect:/rating/update";
+        }
+
+        try {
+            ratingService.saveRating(rating);
+            log.info("[POST]'/rating/update/' => rating/list");
+            return "redirect:/rating/list";
+        } catch (Exception e) {
+            log.info("[POST]'/rating/update/' => rating/list");
+            return "redirect:/rating/list";
+        }
     }
 
     @GetMapping("/rating/delete/{id}")
     public String deleteRating(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Rating by Id and delete the Rating, return to Rating list
-        return "redirect:/rating/list";
+        try {
+            ratingService.deleteRating(id);
+            log.info("[POST]'/rating/delete/' => rating/list");
+            return "redirect:/rating/list";
+        } catch (Exception e) {
+            log.info("[POST]'/rating/delete/' => rating/list");
+            return "redirect:/rating/list";
+        }
     }
 }

@@ -17,18 +17,17 @@ public class BidListService {
         return bidRepo.findAll();
     }
 
-    public boolean addBidList(BidList bidList) {
+    public BidList getBidListById(int id) {
+        return bidRepo.getReferenceById(id);
+    }
+
+    public boolean saveBidList(BidList bidList) {
         bidRepo.save(bidList);
         return true;
     }
 
-    public boolean updateBidList(BidList bidList) {
-        bidRepo.save(bidList);
-        return true;
-    }
-
-    public boolean deleteBidList(BidList bidList) {
-        bidRepo.delete(bidList);
+    public boolean deleteBidList(int id) {
+        bidRepo.delete(getBidListById(id));
         return true;
     }
 }

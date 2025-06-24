@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,6 +40,7 @@ public class CurvePointControllerTest {
     }
 
     @Test
+    @WithMockUser(roles="ADMIN")
     public void curvePointControllerTest() throws Exception {
         // List View
         this.mockMvc.perform(get("/curvePoint/list"))
@@ -71,6 +73,7 @@ public class CurvePointControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
     public void curvePointControllerNonValidTest() throws Exception {
         // List View Non Valid
         when(curvePointService.getAllCurvePoints()).thenAnswer(invocation -> { 

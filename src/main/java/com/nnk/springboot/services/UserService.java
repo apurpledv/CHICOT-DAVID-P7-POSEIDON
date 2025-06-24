@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.domain.DBUser;
 import com.nnk.springboot.repositories.UserRepository;
 
 @Service
@@ -13,20 +13,20 @@ public class UserService {
     @Autowired
     UserRepository userRepo;
 
-    public List<User> getUsers() {
+    public List<DBUser> getUsers() {
         return userRepo.findAll();
     }
 
-    public User getUser(int id) {
+    public DBUser getUser(int id) {
         return userRepo.getReferenceById(id);
     }
 
-    public boolean saveUser(User user) {
+    public boolean saveUser(DBUser user) {
         userRepo.save(user);
         return true;
     }
 
-    public boolean deleteUser(User user) {
+    public boolean deleteUser(DBUser user) {
         userRepo.delete(user);
         return true;
     }

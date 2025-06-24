@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,6 +40,7 @@ public class BidListControllerTest {
     }
 
     @Test
+    @WithMockUser(roles="ADMIN")
     public void bidListControllerTest() throws Exception {
         // List View
         this.mockMvc.perform(get("/bidList/list"))
@@ -71,6 +73,7 @@ public class BidListControllerTest {
     }
 
     @Test
+    @WithMockUser(roles="ADMIN")
     public void bidListControllerNonValidTest() throws Exception {
         // List View Non Valid
         when(bidService.getAllBidLists()).thenAnswer(invocation -> { 

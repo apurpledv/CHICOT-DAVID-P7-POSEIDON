@@ -16,7 +16,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.nnk.springboot.controllers.UserController;
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.domain.DBUser;
 import com.nnk.springboot.services.UserService;
 
 @SpringBootTest
@@ -31,11 +31,11 @@ public class UserControllerTest {
     @MockitoBean 
     UserService userService;
 
-    private User user;
+    private DBUser user;
 
     @BeforeEach
     public void setup() {
-        user = new User();
+        user = new DBUser();
         user.setUsername("newUser");
         user.setFullname("newUser");
         user.setRole("user");
@@ -77,7 +77,7 @@ public class UserControllerTest {
     @Test
     public void userControllerNonValidTest() throws Exception {
         // Add Action Non Valid
-        when(userService.saveUser(any(User.class))).thenAnswer(invocation -> { 
+        when(userService.saveUser(any(DBUser.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});
         this.mockMvc.perform(post("/user/validate"))

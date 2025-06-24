@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.domain.DBUser;
 import com.nnk.springboot.repositories.UserRepository;
 
 @SpringBootTest
@@ -21,7 +21,7 @@ public class UserRepositoryTest {
 
     @Test
     public void userRepositoryTest() {
-        User user = new User();
+        DBUser user = new DBUser();
         user.setUsername("newUser");
         user.setFullname("newUser");
         user.setRole("user");
@@ -38,13 +38,13 @@ public class UserRepositoryTest {
 		assertTrue(user.getUsername().equals("newUser2"));
 
 		// Find
-		List<User> listResult = userRepository.findAll();
+		List<DBUser> listResult = userRepository.findAll();
 		assertTrue(listResult.size() > 0);
 
 		// Delete
 		Integer id = user.getId();
 		userRepository.delete(user);
-		Optional<User> userList = userRepository.findById(id);
+		Optional<DBUser> userList = userRepository.findById(id);
 		assertFalse(userList.isPresent());
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.nnk.springboot.domain.User;
+import com.nnk.springboot.domain.DBUser;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.services.UserService;
 
@@ -25,7 +25,7 @@ public class UserServiceTest {
 
     @Test
     public void userServiceTest() throws Exception {
-        User user = new User();
+        DBUser user = new DBUser();
         user.setUsername("newUser");
         user.setFullname("newUser");
         user.setRole("user");
@@ -43,7 +43,7 @@ public class UserServiceTest {
 
         // Get One User
         when(userRepository.getReferenceById(anyInt())).thenReturn(user);
-        assertTrue(userService.getUser(1) instanceof User);
+        assertTrue(userService.getUser(1) instanceof DBUser);
         
 		// Delete
 		assertTrue(userService.deleteUser(user));

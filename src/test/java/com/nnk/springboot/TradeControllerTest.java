@@ -6,12 +6,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,6 +41,7 @@ public class TradeControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void tradeControllerTest() throws Exception {
         // List View
         this.mockMvc.perform(get("/trade/list"))
@@ -51,6 +54,7 @@ public class TradeControllerTest {
         // Add Action
         when(tradeService.saveTrade(any(Trade.class))).thenReturn(true);
         this.mockMvc.perform(post("/trade/validate")
+            .with(csrf())
             .flashAttr("trade", trade))
             .andExpect(status().isFound());
 
@@ -62,6 +66,7 @@ public class TradeControllerTest {
         // Update Action
         trade.setAccount("New Trade Account");
         this.mockMvc.perform(post("/trade/update/3")
+            .with(csrf())
             .flashAttr("trade", trade))
             .andExpect(status().isFound());
 
@@ -71,6 +76,7 @@ public class TradeControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void tradeControllerNonValidTest() throws Exception {
         // List View Non Valid
         when(tradeService.getAllTrades()).thenAnswer(invocation -> { 
@@ -80,13 +86,15 @@ public class TradeControllerTest {
             .andExpect(status().isOk());
 
         // Add Action Non Valid
-        this.mockMvc.perform(post("/trade/validate"))
+        this.mockMvc.perform(post("/trade/validate")
+            .with(csrf()))
             .andExpect(status().isOk());
 
         when(tradeService.saveTrade(any(Trade.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});
         this.mockMvc.perform(post("/trade/validate")
+            .with(csrf())
             .flashAttr("trade", trade))
             .andExpect(status().isFound());
 
@@ -98,10 +106,12 @@ public class TradeControllerTest {
             .andExpect(status().isFound());
 
         // Update Action Non Valid
-        this.mockMvc.perform(post("/trade/update/3"))
+        this.mockMvc.perform(post("/trade/update/3")
+            .with(csrf()))
             .andExpect(status().isFound());
 
         this.mockMvc.perform(post("/trade/update/3")
+            .with(csrf())
             .flashAttr("trade", trade))
             .andExpect(status().isFound());
 

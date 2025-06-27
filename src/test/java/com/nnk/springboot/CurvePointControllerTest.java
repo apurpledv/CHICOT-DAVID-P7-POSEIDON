@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.nnk.springboot.controllers.CurvePointController;
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.services.CurvePointService;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,7 +42,7 @@ public class CurvePointControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="ADMIN")
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void curvePointControllerTest() throws Exception {
         // List View
         this.mockMvc.perform(get("/curvePoint/list"))
@@ -53,6 +55,7 @@ public class CurvePointControllerTest {
         // Add Action
         when(curvePointService.saveCurvePoint(any(CurvePoint.class))).thenReturn(true);
         this.mockMvc.perform(post("/curvePoint/validate")
+            .with(csrf())
             .flashAttr("curvePoint", curvePoint))
             .andExpect(status().isFound());
 
@@ -64,6 +67,7 @@ public class CurvePointControllerTest {
         // Update Action
         curvePoint.setTerm(15d);
         this.mockMvc.perform(post("/curvePoint/update/3")
+            .with(csrf())
             .flashAttr("curvePoint", curvePoint))
             .andExpect(status().isFound());
 
@@ -73,7 +77,7 @@ public class CurvePointControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin", roles = "ADMIN")
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void curvePointControllerNonValidTest() throws Exception {
         // List View Non Valid
         when(curvePointService.getAllCurvePoints()).thenAnswer(invocation -> { 
@@ -83,13 +87,15 @@ public class CurvePointControllerTest {
             .andExpect(status().isOk());
 
         // Add Action Non Valid
-        this.mockMvc.perform(post("/curvePoint/validate"))
+        this.mockMvc.perform(post("/curvePoint/validate")
+            .with(csrf()))
             .andExpect(status().isOk());
 
         when(curvePointService.saveCurvePoint(any(CurvePoint.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});
         this.mockMvc.perform(post("/curvePoint/validate")
+            .with(csrf())
             .flashAttr("curvePoint", curvePoint))
             .andExpect(status().isFound());
 
@@ -101,10 +107,12 @@ public class CurvePointControllerTest {
             .andExpect(status().isFound());
 
         // Update Action Non Valid
-        this.mockMvc.perform(post("/curvePoint/update/3"))
+        this.mockMvc.perform(post("/curvePoint/update/3")
+            .with(csrf()))
             .andExpect(status().isFound());
 
         this.mockMvc.perform(post("/curvePoint/update/3")
+            .with(csrf())
             .flashAttr("curvePoint", curvePoint))
             .andExpect(status().isFound());
 

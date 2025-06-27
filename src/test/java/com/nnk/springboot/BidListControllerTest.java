@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class BidListControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="ADMIN")
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void bidListControllerTest() throws Exception {
         // List View
         this.mockMvc.perform(get("/bidList/list"))
@@ -53,6 +54,7 @@ public class BidListControllerTest {
         // Add Action
         when(bidService.saveBidList(any(BidList.class))).thenReturn(true);
         this.mockMvc.perform(post("/bidList/validate")
+            .with(csrf())
             .flashAttr("bidList", bid))
             .andExpect(status().isFound());
 
@@ -64,6 +66,7 @@ public class BidListControllerTest {
         // Update Action
         bid.setAccount("Account Null");
         this.mockMvc.perform(post("/bidList/update/3")
+            .with(csrf())
             .flashAttr("bidList", bid))
             .andExpect(status().isFound());
 
@@ -73,7 +76,7 @@ public class BidListControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="ADMIN")
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void bidListControllerNonValidTest() throws Exception {
         // List View Non Valid
         when(bidService.getAllBidLists()).thenAnswer(invocation -> { 
@@ -83,13 +86,15 @@ public class BidListControllerTest {
             .andExpect(status().isOk());
 
         // Add Action Non Valid
-        this.mockMvc.perform(post("/bidList/validate"))
+        this.mockMvc.perform(post("/bidList/validate")
+            .with(csrf()))
             .andExpect(status().isOk());
 
         when(bidService.saveBidList(any(BidList.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});
         this.mockMvc.perform(post("/bidList/validate")
+            .with(csrf())
             .flashAttr("bidList", bid))
             .andExpect(status().isFound());
 
@@ -101,10 +106,12 @@ public class BidListControllerTest {
             .andExpect(status().isFound());
 
         // Update Action Non Valid
-        this.mockMvc.perform(post("/bidList/update/3"))
+        this.mockMvc.perform(post("/bidList/update/3")
+            .with(csrf()))
             .andExpect(status().isFound());
 
         this.mockMvc.perform(post("/bidList/update/3")
+            .with(csrf())
             .flashAttr("bidList", bid))
             .andExpect(status().isFound());
 

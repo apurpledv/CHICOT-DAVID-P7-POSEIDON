@@ -6,12 +6,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,6 +41,7 @@ public class RuleNameControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void ruleNameControllerTest() throws Exception {
         // List View
         this.mockMvc.perform(get("/ruleName/list"))
@@ -51,6 +54,7 @@ public class RuleNameControllerTest {
         // Add Action
         when(ruleNameService.saveRuleName(any(RuleName.class))).thenReturn(true);
         this.mockMvc.perform(post("/ruleName/validate")
+            .with(csrf())
             .flashAttr("ruleName", ruleName))
             .andExpect(status().isFound());
 
@@ -62,6 +66,7 @@ public class RuleNameControllerTest {
         // Update Action
         ruleName.setName("New Rule Name");
         this.mockMvc.perform(post("/ruleName/update/3")
+            .with(csrf())
             .flashAttr("ruleName", ruleName))
             .andExpect(status().isFound());
 
@@ -71,6 +76,7 @@ public class RuleNameControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void ruleNameControllerNonValidTest() throws Exception {
         // List View Non Valid
         when(ruleNameService.getAllRuleNames()).thenAnswer(invocation -> { 
@@ -80,13 +86,15 @@ public class RuleNameControllerTest {
             .andExpect(status().isOk());
 
         // Add Action Non Valid
-        this.mockMvc.perform(post("/ruleName/validate"))
+        this.mockMvc.perform(post("/ruleName/validate")
+            .with(csrf()))
             .andExpect(status().isOk());
 
         when(ruleNameService.saveRuleName(any(RuleName.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});
         this.mockMvc.perform(post("/ruleName/validate")
+            .with(csrf())
             .flashAttr("ruleName", ruleName))
             .andExpect(status().isFound());
 
@@ -98,10 +106,12 @@ public class RuleNameControllerTest {
             .andExpect(status().isFound());
 
         // Update Action Non Valid
-        this.mockMvc.perform(post("/ruleName/update/3"))
+        this.mockMvc.perform(post("/ruleName/update/3")
+            .with(csrf()))
             .andExpect(status().isFound());
 
         this.mockMvc.perform(post("/ruleName/update/3")
+            .with(csrf())
             .flashAttr("ruleName", ruleName))
             .andExpect(status().isFound());
 

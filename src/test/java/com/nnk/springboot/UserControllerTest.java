@@ -6,12 +6,14 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -38,11 +40,12 @@ public class UserControllerTest {
         user = new DBUser();
         user.setUsername("newUser");
         user.setFullname("newUser");
-        user.setRole("user");
-        user.setPassword("newUser");
+        user.setRole("USER");
+        user.setPassword("newUser8$");
     }
 
     @Test
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void userControllerTest() throws Exception {
         // List View
         this.mockMvc.perform(get("/user/list"))
@@ -54,6 +57,7 @@ public class UserControllerTest {
 
         // Add Action
         this.mockMvc.perform(post("/user/validate")
+            .with(csrf())
             .flashAttr("user", user))
             .andExpect(status().isFound());
 
@@ -66,6 +70,7 @@ public class UserControllerTest {
         user.setUsername("newUser2");
         user.setPassword("newUser");
         this.mockMvc.perform(post("/user/update/3")
+            .with(csrf())
             .flashAttr("user", user))
             .andExpect(status().isFound());
 
@@ -75,15 +80,18 @@ public class UserControllerTest {
     }
 
     @Test
+    @WithMockUser(username="admin", password="$2a$10$Mp3y7EN9m6VbliULkZxR/.q1u96ZOnzFbo6ASTeYZakJ7hZInP9AG", roles={"USER", "ADMIN"})
     public void userControllerNonValidTest() throws Exception {
         // Add Action Non Valid
         when(userService.saveUser(any(DBUser.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});
-        this.mockMvc.perform(post("/user/validate"))
-            .andExpect(status().isOk());
+        this.mockMvc.perform(post("/user/validate")
+            .with(csrf()))
+            .andExpect(status().isFound());
 
         this.mockMvc.perform(post("/user/validate")
+            .with(csrf())
             .flashAttr("user", user))
             .andExpect(status().isFound());
 
@@ -95,12 +103,22 @@ public class UserControllerTest {
             .andExpect(status().isOk());
 
         // Update Action Non Valid
-        this.mockMvc.perform(post("/user/update/3"))
-            .andExpect(status().isOk());
+        this.mockMvc.perform(post("/user/update/3")
+            .with(csrf()))
+            .andExpect(status().isFound());
 
         this.mockMvc.perform(post("/user/update/3")
+            .with(csrf())
             .flashAttr("user", user))
             .andExpect(status().isFound());
+
+        user.setPassword("");
+        this.mockMvc.perform(post("/user/update/3")
+            .with(csrf())
+            .flashAttr("user", user))
+            .andExpect(status().isFound());
+            
+        user.setPassword("newUser8$");
 
         // Delete Action Non Valid
         this.mockMvc.perform(get("/user/delete/3"))

@@ -48,7 +48,6 @@ public class CurvePointController {
 
         try {
             curveService.saveCurvePoint(curvePoint);
-            System.out.println("wtf");
             log.info("[POST]'/curvePoint/validate' => curvePoint/list");
             return "redirect:/curvePoint/list";
         } catch (Exception e) {

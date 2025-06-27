@@ -51,6 +51,7 @@ public class TradeController {
             log.info("[POST]'/trade/validate' => trade/list");
             return "redirect:/trade/list";
         } catch (Exception e) {
+            log.error(e.toString());
             log.info("[POST]'/curvePoint/validate' => trade/list");
             return "redirect:/trade/list";
         }

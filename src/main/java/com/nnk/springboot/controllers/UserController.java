@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,11 +43,10 @@ public class UserController {
     }
 
     @PostMapping("/user/validate")
-    public String validate(@Validated DBUser user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+    public String validate(@Validated @ModelAttribute("user") DBUser user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            System.out.println(result.getAllErrors());
             redirectAttributes.addFlashAttribute("passwordError", "Mot de passe non valide. Veuillez renseigner un mot de passe contenant : 8 caractères, 1 majuscule, 1 symbole et 1 chiffre minimums.");
-            log.info("[POST]'/user/validate' -> user/add");
+            log.info("[POST]'/user/validate' => user/add");
             return "redirect:/user/add";
         }
 
@@ -58,8 +58,8 @@ public class UserController {
             log.info("[POST]'/user/validate' => user/list");
             return "redirect:/user/list";
         } catch (Exception e) {
-            log.error(e.toString());
             log.info("[POST]'/user/validate' => user/list");
+            log.error(e.toString());
             return "redirect:/user/list";
         }
     }
@@ -74,20 +74,24 @@ public class UserController {
             return "user/update";
         } catch (Exception e) {
             log.info("[GET]'/user/update/' -> home");
+            log.error(e.toString());
             return "home";
         }
     }
 
     @PostMapping("/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Validated DBUser user, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            log.info("[POST]'/user/update/' -> user/update");
-            return "user/update";
-        }
-
+    public String updateUser(@PathVariable("id") Integer id, @Validated @ModelAttribute("user") DBUser user, BindingResult result, Model model) {
         try {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
+            if (user.getPassword() != null && !user.getPassword().isEmpty() && result.hasErrors()) {
+                log.info("[POST]'/user/update/' => user/update");
+                return "redirect:/user/update/" + id.toString();
+            }
+
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                user.setPassword(encoder.encode(user.getPassword()));
+            } 
+
             user.setId(id);
             userService.saveUser(user);
             model.addAttribute("users", userService.getUsers());
@@ -95,6 +99,7 @@ public class UserController {
             return "redirect:/user/list";
         } catch (Exception e) {
             log.info("[POST]'/user/update/' => user/list");
+            log.error(e.toString());
             return "redirect:/user/list";
         }
     }
@@ -109,6 +114,7 @@ public class UserController {
             return "redirect:/user/list";
         } catch (Exception e) {
             log.info("[POST]'/user/update/' => user/list");
+            log.error(e.toString());
             return "redirect:/user/list";
         }
     }

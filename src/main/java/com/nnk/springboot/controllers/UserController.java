@@ -80,9 +80,10 @@ public class UserController {
     }
 
     @PostMapping("/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Validated @ModelAttribute("user") DBUser user, BindingResult result, Model model) {
+    public String updateUser(@PathVariable("id") Integer id, @Validated @ModelAttribute("user") DBUser user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         try {
             if (user.getPassword() != null && !user.getPassword().isEmpty() && result.hasErrors()) {
+                redirectAttributes.addFlashAttribute("passwordError", "Mot de passe non valide. Veuillez renseigner un mot de passe contenant : 8 caractères, 1 majuscule, 1 symbole et 1 chiffre minimums.");
                 log.info("[POST]'/user/update/' => user/update");
                 return "redirect:/user/update/" + id.toString();
             }
@@ -90,7 +91,9 @@ public class UserController {
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 user.setPassword(encoder.encode(user.getPassword()));
-            } 
+            } else {
+                user.setPassword(userService.getUser(id).getPassword());
+            }
 
             user.setId(id);
             userService.saveUser(user);

@@ -73,7 +73,7 @@ public class TradeController {
     public String updateTrade(@PathVariable("id") Integer id, @Validated Trade trade, BindingResult result, Model model) {
         if (result.hasErrors() || !trade.isValid()) {
             log.info("[POST]'/trade/update' => trade/update");
-            return "redirect:/trade/update";
+            return "redirect:/trade/update/" + id.toString();
         }
 
         try {

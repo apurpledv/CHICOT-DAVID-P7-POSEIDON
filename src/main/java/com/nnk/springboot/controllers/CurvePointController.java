@@ -72,7 +72,7 @@ public class CurvePointController {
     public String updateBid(@PathVariable("id") Integer id, @Validated CurvePoint curvePoint, BindingResult result, Model model) {
         if (result.hasErrors() || !curvePoint.isValid()) {
             log.info("[POST]'/curvePoint/update' => curvePoint/update");
-            return "redirect:/curvePoint/update";
+            return "redirect:/curvePoint/update/" + id.toString();
         }
 
         try {

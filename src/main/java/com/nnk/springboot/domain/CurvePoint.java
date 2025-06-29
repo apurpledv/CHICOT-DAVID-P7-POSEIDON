@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -19,7 +20,11 @@ public class CurvePoint {
     
     Integer curveId;
     Timestamp asOfDate;
+
+    @NotNull(message = "Term is mandatory")
     Double term;
+    
+    @NotNull(message = "Value is mandatory")
     Double value;
     Timestamp creationDate;
 
@@ -34,6 +39,6 @@ public class CurvePoint {
     }
 
     public boolean isValid() {
-        return (this.curveId != null && this.term != null && this.value != null);
+        return (this.term != null && this.value != null);
     }
 }

@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -26,7 +27,9 @@ public class BidList {
     @NotBlank(message = "type is mandatory")
     String type;
 
+    @NotNull(message = "bidQuantity is mandatory")
     Double bidQuantity;
+    
     Double askQuantity;
     Double bid;
     Double ask;

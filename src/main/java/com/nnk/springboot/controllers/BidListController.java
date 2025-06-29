@@ -72,7 +72,7 @@ public class BidListController {
     public String updateBid(@PathVariable("id") Integer id, @Validated BidList bid, BindingResult result, Model model) {
         if (result.hasErrors()) {
             log.info("[POST]'/bidList/update/' -> bidList/update");
-            return "redirect:/bidList/update";    
+            return "redirect:/bidList/update/" + id.toString();   
         }
 
         try {

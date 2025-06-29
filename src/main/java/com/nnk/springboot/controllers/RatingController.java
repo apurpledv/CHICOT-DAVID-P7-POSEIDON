@@ -72,7 +72,7 @@ public class RatingController {
     public String updateRating(@PathVariable("id") Integer id, @Validated Rating rating, BindingResult result, Model model) {
         if (result.hasErrors() || !rating.isValid()) {
             log.info("[POST]'/rating/update' => rating/update");
-            return "redirect:/rating/update";
+            return "redirect:/rating/update/" + id.toString();
         }
 
         try {

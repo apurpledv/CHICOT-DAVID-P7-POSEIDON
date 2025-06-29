@@ -72,7 +72,7 @@ public class RuleNameController {
     public String updateRuleName(@PathVariable("id") Integer id, @Validated RuleName ruleName, BindingResult result, Model model) {
         if (result.hasErrors() || !ruleName.isValid()) {
             log.info("[POST]'/ruleName/update' => ruleName/update");
-            return "redirect:/ruleName/update";
+            return "redirect:/ruleName/update/" + id.toString();
         }
 
         try {

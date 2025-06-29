@@ -90,6 +90,11 @@ public class BidListControllerTest {
             .with(csrf()))
             .andExpect(status().isOk());
 
+        this.mockMvc.perform(post("/bidList/validate")
+            .with(csrf())
+            .flashAttr("bidList", new BidList()))
+            .andExpect(status().isOk());
+
         when(bidService.saveBidList(any(BidList.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});

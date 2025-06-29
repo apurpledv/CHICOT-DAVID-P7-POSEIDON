@@ -52,12 +52,13 @@ public class Trade {
         
     }
 
-    public Trade(String account, String type) {
+    public Trade(String account, String type, Double buyQuantity) {
         this.account = account;
         this.type = type;
+        this.buyQuantity = buyQuantity;
     }
 
     public boolean isValid() {
-        return (this.account != null && this.type != null);
+        return (this.account != null && this.type != null && this.buyQuantity != null);
     }
 }

@@ -89,6 +89,11 @@ public class RatingControllerTest {
         this.mockMvc.perform(post("/rating/validate")
             .with(csrf()))
             .andExpect(status().isOk());
+        
+        this.mockMvc.perform(post("/rating/validate")
+            .with(csrf())
+            .flashAttr("rating", new Rating()))
+            .andExpect(status().isOk());
 
         when(ratingService.saveRating(any(Rating.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 

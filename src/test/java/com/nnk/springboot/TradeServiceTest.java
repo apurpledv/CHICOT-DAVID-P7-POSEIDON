@@ -25,7 +25,7 @@ public class TradeServiceTest {
 
     @Test
     public void tradeServiceTest() throws Exception {
-        Trade trade = new Trade("Trade Account", "Type");
+        Trade trade = new Trade("Trade Account", "Type", 2d);
 
 		// Save
 		assertTrue(tradeService.saveTrade(trade));

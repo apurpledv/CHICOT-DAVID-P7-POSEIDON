@@ -90,6 +90,11 @@ public class RuleNameControllerTest {
             .with(csrf()))
             .andExpect(status().isOk());
 
+        this.mockMvc.perform(post("/ruleName/validate")
+            .with(csrf())
+            .flashAttr("ruleName", new RuleName()))
+            .andExpect(status().isOk());
+
         when(ruleNameService.saveRuleName(any(RuleName.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});

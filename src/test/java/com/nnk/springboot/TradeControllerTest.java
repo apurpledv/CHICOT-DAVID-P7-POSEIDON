@@ -37,7 +37,7 @@ public class TradeControllerTest {
 
     @BeforeEach
     public void setup() {
-        trade = new Trade("Trade Account", "Type");
+        trade = new Trade("Trade Account", "Type", 2d);
     }
 
     @Test
@@ -88,6 +88,11 @@ public class TradeControllerTest {
         // Add Action Non Valid
         this.mockMvc.perform(post("/trade/validate")
             .with(csrf()))
+            .andExpect(status().isOk());
+
+        this.mockMvc.perform(post("/trade/validate")
+            .with(csrf())
+            .flashAttr("trade", new Trade()))
             .andExpect(status().isOk());
 
         when(tradeService.saveTrade(any(Trade.class))).thenAnswer(invocation -> { 

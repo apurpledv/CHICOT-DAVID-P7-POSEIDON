@@ -69,7 +69,7 @@ public class CurvePointController {
     }
 
     @PostMapping("/curvePoint/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Validated CurvePoint curvePoint, BindingResult result, Model model) {
+    public String updateCurvePoint(@PathVariable("id") Integer id, @Validated CurvePoint curvePoint, BindingResult result, Model model) {
         if (result.hasErrors() || !curvePoint.isValid()) {
             log.info("[POST]'/curvePoint/update' => curvePoint/update");
             return "redirect:/curvePoint/update/" + id.toString();
@@ -86,7 +86,7 @@ public class CurvePointController {
     }
 
     @GetMapping("/curvePoint/delete/{id}")
-    public String deleteBid(@PathVariable("id") Integer id, Model model) {
+    public String deleteCurvePoint(@PathVariable("id") Integer id, Model model) {
         try {
             curveService.deleteCurvePoint(id);
             log.info("[POST]'/curvePoint/delete/' => curvePoint/list");

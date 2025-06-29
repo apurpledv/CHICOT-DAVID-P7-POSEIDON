@@ -91,6 +91,11 @@ public class CurvePointControllerTest {
             .with(csrf()))
             .andExpect(status().isOk());
 
+        this.mockMvc.perform(post("/curvePoint/validate")
+            .with(csrf())
+            .flashAttr("curvePoint", new CurvePoint()))
+            .andExpect(status().isOk());
+
         when(curvePointService.saveCurvePoint(any(CurvePoint.class))).thenAnswer(invocation -> { 
 			throw new Exception(); 
 		});

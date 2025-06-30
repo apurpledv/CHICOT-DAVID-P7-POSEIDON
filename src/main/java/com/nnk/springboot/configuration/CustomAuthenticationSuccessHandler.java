@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     SimpleUrlAuthenticationSuccessHandler userSuccessHandler = new SimpleUrlAuthenticationSuccessHandler("/bidList/list");
     SimpleUrlAuthenticationSuccessHandler adminSuccessHandler = new SimpleUrlAuthenticationSuccessHandler("/home-admin");
-
+    
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
